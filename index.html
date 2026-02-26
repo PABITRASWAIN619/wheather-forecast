@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- WEATHER BACKGROUND -->
+    <div id="weatherAnimation"></div>
+
+    <div class="app">
+      <h1>Weather Forecast</h1>
+
+      <!-- SEARCH -->
+      <div class="search-box">
+        <input
+          type="text"
+          id="cityInput"
+          placeholder="Enter city or village"
+          oninput="searchLocation()"
+        />
+        <button onclick="getWeather()">Search</button>
+        <button onclick="getLocationWeather()">📍usemylocation</button>
+        <button onclick="toggleTheme()">🌙Mode</button>
+        <div id="suggestions"></div>
+      </div>
+
+      <!-- CURRENT -->
+      <div class="current">
+        <h2 id="cityName">—</h2>
+        <img id="weatherIcon" src="" />
+        <h3 id="temperature">—</h3>
+        <p id="description">—</p>
+      </div>
+
+      <!-- DETAILS -->
+      <div class="details">
+        <div class="card" onclick="openDetail('humidity')">
+          Humidity <span id="humidity">--</span>
+        </div>
+
+        <div class="card" onclick="openDetail('wind')">
+          Wind <span id="wind">--</span>
+        </div>
+
+        <div class="card" onclick="openDetail('feels')">
+          Feels Like <span id="feelsLike">--</span>
+        </div>
+      </div>
+
+      <!-- DETAIL SCREEN -->
+      <div id="detailScreen" class="detail-screen">
+        <button class="back-btn" onclick="goBack()">⬅ Back</button>
+        <h2 id="detailTitle"></h2>
+        <div id="detailContent"></div>
+      </div>
+
+      <!-- 5 DAY -->
+      <div class="forecast-section">
+        <h2>5-Day Forecast</h2>
+        <div id="forecast"></div>
+      </div>
+
+      <!-- WEEKLY -->
+      <div class="weekly-section">
+        <h2>Weekly Forecast</h2>
+        <div id="dayButtons" class="day-buttons"></div>
+        <div id="dayDetails" class="day-details">Select a day</div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

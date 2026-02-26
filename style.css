@@ -1,0 +1,314 @@
+/* ===== BASE ===== */
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  color: #111;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* ===== WEATHER ANIMATION BACKGROUND ===== */
+#weatherAnimation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* ===== SUNNY ===== */
+.sunny {
+  background: radial-gradient(circle at 70% 20%, #ffe57f, transparent 40%),
+              linear-gradient(to bottom, #87ceeb, #f7d794);
+  animation: sunGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes sunGlow {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.2); }
+}
+
+/* ===== RAIN ===== */
+.rain {
+  background: linear-gradient(to bottom, #4e54c8, #8f94fb);
+}
+
+.rain::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.4) 0px,
+    rgba(255,255,255,0.4) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+  animation: rainFall 0.5s linear infinite;
+}
+
+@keyframes rainFall {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+
+/* ===== SNOW ===== */
+.snow {
+  background: linear-gradient(to bottom, #83a4d4, #b6fbff);
+}
+
+.snow::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(white 2px, transparent 2px);
+  background-size: 40px 40px;
+  animation: snowFall 10s linear infinite;
+}
+
+@keyframes snowFall {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+
+/* ===== CLOUDS ===== */
+.clouds {
+  background: linear-gradient(to bottom, #d7d2cc, #304352);
+}
+
+/* ===== APP GLASS PANEL ===== */
+.app {
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.25);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+}
+
+/* ===== HEADINGS ===== */
+h1 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* ===== SEARCH ===== */
+.search-box {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+}
+
+/* ===== VIBE BUTTON STYLE ===== */
+button {
+  position: relative;
+  overflow: hidden;
+  padding: 10px 16px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: white;
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.3),
+    inset 0 0 8px rgba(255,255,255,0.15);
+  transition: all 0.35s ease;
+}
+
+button:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow:
+    0 15px 30px rgba(0,0,0,0.4),
+    0 0 18px rgba(118,75,162,0.6);
+  filter: brightness(1.15);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255,255,255,0.6),
+    transparent
+  );
+  transition: 0.6s;
+}
+
+button:hover::before {
+  left: 120%;
+}
+
+/* ===== CURRENT WEATHER ===== */
+.current {
+  text-align: center;
+  margin: 25px 0;
+}
+
+.current img {
+  width: 80px;
+}
+
+/* ===== DETAILS ===== */
+.details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card {
+  background: rgba(255,255,255,0.35);
+  padding: 15px;
+  border-radius: 15px;
+  width: 30%;
+  text-align: center;
+  font-weight: 500;
+  color: #111;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+/* ===== FORECAST ===== */
+.forecast-card {
+  background: rgba(255,255,255,0.35);
+  padding: 12px;
+  border-radius: 12px;
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  color: #111;
+}
+
+/* ===== WEEKLY ===== */
+.day-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.day-buttons button {
+  flex: 1;
+  margin: 5px;
+  font-size: 12px;
+}
+
+.day-details {
+  margin-top: 15px;
+  background: rgba(255,255,255,0.35);
+  padding: 15px;
+  border-radius: 12px;
+  color: #111;
+}
+
+/* ===== SUGGESTIONS ===== */
+#suggestions {
+  position: absolute;
+  top: 45px;
+  width: 100%;
+  background: white;
+  color: black;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  z-index: 1000;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background: #f1f1f1;
+}
+
+/* ===== DETAIL SCREEN ===== */
+.detail-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  color: white;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 999;
+}
+
+.detail-screen.show {
+  display: flex;
+}
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background: #ff7e5f;
+  color: white;
+  cursor: pointer;
+}
+
+/* ===== DARK MODE ===== */
+.dark-mode {
+  color: white;
+}
+
+.dark-mode .app {
+  background: rgba(0,0,0,0.45);
+}
+
+.dark-mode .card,
+.dark-mode .forecast-card,
+.dark-mode .day-details {
+  background: rgba(0,0,0,0.45);
+  color: white;
+}
+
+.dark-mode input {
+  background: rgba(255,255,255,0.15);
+  color: white;
+}
+
+.dark-mode #suggestions {
+  background: #2b2b2b;
+  color: white;
+}
