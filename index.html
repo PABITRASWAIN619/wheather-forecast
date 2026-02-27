@@ -2,13 +2,19 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather Forecast</title>
+
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
 
   <body>
     <!-- WEATHER BACKGROUND -->
     <div id="weatherAnimation"></div>
+
+    <!-- LOADER -->
+    <div id="loader" class="loader">Loading weather...</div>
 
     <div class="app">
       <h1>Weather Forecast</h1>
@@ -22,8 +28,8 @@
           oninput="searchLocation()"
         />
         <button onclick="getWeather()">Search</button>
-        <button onclick="getLocationWeather()">📍usemylocation</button>
-        <button onclick="toggleTheme()">🌙Mode</button>
+        <button onclick="getLocationWeather()">📍use my location</button>
+        <button onclick="toggleTheme()">🌙mode</button>
         <div id="suggestions"></div>
       </div>
 
@@ -32,6 +38,17 @@
         <h2 id="cityName">—</h2>
         <img id="weatherIcon" src="" />
         <h3 id="temperature">—</h3>
+
+        <div class="sun">
+          <span id="sunrise">🌅 --</span>
+          <span id="sunset">🌇 --</span>
+        </div>
+
+        <div class="minmax">
+          <span id="minTemp">Min: --°C</span>
+          <span id="maxTemp">Max: --°C</span>
+        </div>
+
         <p id="description">—</p>
       </div>
 
@@ -40,11 +57,9 @@
         <div class="card" onclick="openDetail('humidity')">
           Humidity <span id="humidity">--</span>
         </div>
-
         <div class="card" onclick="openDetail('wind')">
           Wind <span id="wind">--</span>
         </div>
-
         <div class="card" onclick="openDetail('feels')">
           Feels Like <span id="feelsLike">--</span>
         </div>
@@ -63,6 +78,12 @@
         <div id="forecast"></div>
       </div>
 
+      <!-- HOURLY -->
+      <div class="forecast-section">
+        <h2>Hourly Temperature</h2>
+        <canvas id="hourlyChart"></canvas>
+      </div>
+
       <!-- WEEKLY -->
       <div class="weekly-section">
         <h2>Weekly Forecast</h2>
@@ -70,6 +91,8 @@
         <div id="dayDetails" class="day-details">Select a day</div>
       </div>
     </div>
+
+    <div id="offlineMsg" class="offline">⚠ No internet connection</div>
 
     <script src="script.js"></script>
   </body>

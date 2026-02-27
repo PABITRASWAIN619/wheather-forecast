@@ -10,9 +10,7 @@ async function searchLocation() {
     return;
   }
 
-  const url =
-    `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`;
-
+  const url = `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${apiKey}`;
   const data = await (await fetch(url)).json();
   box.innerHTML = "";
 
@@ -20,13 +18,11 @@ async function searchLocation() {
     const div = document.createElement("div");
     div.className = "suggestion-item";
     div.innerText = `${place.name}, ${place.country}`;
-
     div.onclick = () => {
       document.getElementById("cityInput").value = place.name;
       box.innerHTML = "";
       loadWeatherByCoords(place.lat, place.lon, place.name);
     };
-
     box.appendChild(div);
   });
 }
@@ -36,9 +32,7 @@ async function getWeather() {
   const city = document.getElementById("cityInput").value.trim();
   if (!city) return alert("Enter a place name");
 
-  const geoURL =
-    `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
-
+  const geoURL = `https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`;
   const geoData = await (await fetch(geoURL)).json();
   if (!geoData.length) return alert("Location not found");
 
@@ -47,20 +41,31 @@ async function getWeather() {
 
 /* LOAD WEATHER */
 async function loadWeatherByCoords(lat, lon, placeName = "") {
-  const weatherURL =
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+  document.getElementById("loader").classList.add("show");
 
-  const forecastURL =
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+  const weatherURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
+  const forecastURL = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`;
 
   const currentData = await (await fetch(weatherURL)).json();
   const forecastData = await (await fetch(forecastURL)).json();
 
-  document.getElementById("cityName").innerText =
-    placeName || currentData.name;
+  document.getElementById("cityName").innerText = placeName || currentData.name;
 
-  document.getElementById("temperature").innerText =
-    Math.round(currentData.main.temp) + "°C";
+  const temp = Math.round(currentData.main.temp);
+  const tempEl = document.getElementById("temperature");
+  tempEl.innerText = temp + "°C";
+
+  document.getElementById("minTemp").innerText =
+    "Min: " + Math.round(currentData.main.temp_min) + "°C";
+
+  document.getElementById("maxTemp").innerText =
+    "Max: " + Math.round(currentData.main.temp_max) + "°C";
+
+  document.getElementById("sunrise").innerText =
+    "🌅 " + new Date(currentData.sys.sunrise * 1000).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+
+  document.getElementById("sunset").innerText =
+    "🌇 " + new Date(currentData.sys.sunset * 1000).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
 
   document.getElementById("description").innerText =
     currentData.weather[0].description;
@@ -81,14 +86,15 @@ async function loadWeatherByCoords(lat, lon, placeName = "") {
 
   createFiveDayForecast(forecastData);
   createWeeklyForecast(forecastData);
+  createHourlyChart(forecastData);
+
+  document.getElementById("loader").classList.remove("show");
 }
 
-/* ⭐ WEATHER BACKGROUND */
+/* WEATHER BACKGROUND */
 function setWeatherAnimation(type) {
   const anim = document.getElementById("weatherAnimation");
-  if (!anim) return;
-
-  anim.classList.remove("sunny","rain","snow","clouds");
+  anim.className = "";
 
   if (type === "Clear") anim.classList.add("sunny");
   else if (type === "Rain" || type === "Drizzle") anim.classList.add("rain");
@@ -147,7 +153,26 @@ function createWeeklyForecast(data) {
   });
 }
 
-/* OTHER */
+function createHourlyChart(data) {
+  const ctx = document.getElementById("hourlyChart").getContext("2d");
+
+  const hours = data.list.slice(0, 8).map(item =>
+    new Date(item.dt_txt).getHours() + ":00"
+  );
+
+  const temps = data.list.slice(0, 8).map(item =>
+    Math.round(item.main.temp)
+  );
+
+  if (window.hourChart) window.hourChart.destroy();
+
+  window.hourChart = new Chart(ctx, {
+    type: "line",
+    data: { labels: hours, datasets: [{ data: temps, tension: 0.4 }] },
+    options: { plugins: { legend: { display: false } } }
+  });
+}
+
 function getLocationWeather() {
   navigator.geolocation.getCurrentPosition(pos => {
     loadWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
@@ -163,28 +188,38 @@ function openDetail(type) {
   const title = document.getElementById("detailTitle");
   const content = document.getElementById("detailContent");
 
-  const humidity = document.getElementById("humidity").innerText;
-  const wind = document.getElementById("wind").innerText;
-  const feels = document.getElementById("feelsLike").innerText;
-
   screen.classList.add("show");
 
   if (type === "humidity") {
     title.innerText = "Humidity Details";
-    content.innerHTML = `<h1>${humidity}</h1>`;
+    content.innerHTML = `<h1>${document.getElementById("humidity").innerText}</h1>`;
   }
-
   if (type === "wind") {
     title.innerText = "Wind Details";
-    content.innerHTML = `<h1>${wind}</h1>`;
+    content.innerHTML = `<h1>${document.getElementById("wind").innerText}</h1>`;
   }
-
   if (type === "feels") {
     title.innerText = "Feels Like Temperature";
-    content.innerHTML = `<h1>${feels}</h1>`;
+    content.innerHTML = `<h1>${document.getElementById("feelsLike").innerText}</h1>`;
   }
 }
 
 function goBack() {
   document.getElementById("detailScreen").classList.remove("show");
 }
+
+window.onload = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      loadWeatherByCoords(pos.coords.latitude, pos.coords.longitude);
+    });
+  }
+};
+
+window.addEventListener("offline", () => {
+  document.getElementById("offlineMsg").classList.add("show");
+});
+
+window.addEventListener("online", () => {
+  document.getElementById("offlineMsg").classList.remove("show");
+});
